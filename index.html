@@ -18,8 +18,10 @@
         </div>
 
         <div class="input-scroll-area">
+            
             <div class="input-section">
-                <h3>Acquisition</h3>
+                <h3>Core Details</h3>
+                
                 <div class="input-group">
                     <label>Purchase Price</label>
                     <div class="input-wrapper">
@@ -27,6 +29,7 @@
                         <input type="number" id="purchasePrice" value="300000">
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="input-group half">
                         <label>Rehab Costs</label>
@@ -43,58 +46,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>Closing Costs (%)</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="closingCostsPct" value="3.0" step="0.1">
-                        <span>%</span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="input-section">
-                <h3>Financing</h3>
                 <div class="row">
                     <div class="input-group half">
-                        <label>Down Payment</label>
+                        <label>Down Pmt (%)</label>
                         <div class="input-wrapper">
                             <input type="number" id="downPaymentPct" value="20" step="0.1">
                             <span>%</span>
                         </div>
                     </div>
                     <div class="input-group half">
-                        <label>Loan Term</label>
+                        <label>Rate (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="mortgageRate" value="7.0" step="0.1">
+                            <span>%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group half">
+                        <label>Term (Yrs)</label>
                         <div class="input-wrapper">
                             <input type="number" id="loanTerm" value="30">
                             <span>Yr</span>
                         </div>
                     </div>
-                </div>
-                <div class="input-group">
-                    <label>Interest Rate</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="mortgageRate" value="7.0" step="0.1">
-                        <span>%</span>
+                     <div class="input-group half">
+                        <label>Rent ($/mo)</label>
+                        <div class="input-wrapper">
+                            <span>$</span>
+                            <input type="number" id="grossMonthlyRent" value="2500">
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>PMI (if <20% down)</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="pmiPct" value="0.6" step="0.1">
-                        <span>%</span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="input-section">
-                <h3>Operational</h3>
-                <div class="input-group">
-                    <label>Monthly Rent</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input type="number" id="grossMonthlyRent" value="2500">
-                    </div>
-                </div>
                 <div class="input-group">
                     <label>Annual Taxes</label>
                     <div class="input-wrapper">
@@ -102,101 +88,129 @@
                         <input type="number" id="propertyTaxes" value="3600">
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>Insurance (% of Price)</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="insurancePct" value="0.6" step="0.1">
-                        <span>%</span>
+            </div>
+
+            <div class="advanced-toggle" onclick="toggleAdvanced()">
+                <span>Advanced Options & Assumptions</span>
+                <span id="toggle-arrow">▼</span>
+            </div>
+
+            <div id="advanced-inputs" class="advanced-section hidden">
+                
+                <div class="input-section no-border">
+                    <div class="input-group">
+                        <label>Closing Costs (% of Price)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="closingCostsPct" value="3.0" step="0.1">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>PMI (if <20% Down)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="pmiPct" value="0.6" step="0.1">
+                            <span>%</span>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="input-group half">
-                        <label>HOA ($/mo)</label>
+
+                <div class="input-section no-border">
+                    <div class="input-group">
+                        <label>Insurance (% of Price)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="insurancePct" value="0.6" step="0.1">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group half">
+                            <label>HOA ($/mo)</label>
+                            <div class="input-wrapper">
+                                <span>$</span>
+                                <input type="number" id="hoaFees" value="0">
+                            </div>
+                        </div>
+                        <div class="input-group half">
+                            <label>Vacancy</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="vacancyRate" value="6.0" step="0.1">
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Owner Utilities ($/mo)</label>
                         <div class="input-wrapper">
                             <span>$</span>
-                            <input type="number" id="hoaFees" value="0">
+                            <input type="number" id="utilities" value="50">
                         </div>
                     </div>
-                    <div class="input-group half">
-                        <label>Vacancy</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="vacancyRate" value="6.0" step="0.1">
-                            <span>%</span>
+                    
+                    <div class="row">
+                        <div class="input-group third">
+                            <label>Repair</label>
+                            <div class="input-wrapper small">
+                                <input type="number" id="repairsPct" value="6.0">
+                                <span>%</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Owner Utilities ($/mo)</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input type="number" id="utilities" value="50">
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="input-group third">
-                        <label>Repair</label>
-                        <div class="input-wrapper small">
-                            <input type="number" id="repairsPct" value="6.0">
-                            <span>%</span>
+                        <div class="input-group third">
+                            <label>CapEx</label>
+                            <div class="input-wrapper small">
+                                <input type="number" id="capexPct" value="6.0">
+                                <span>%</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group third">
-                        <label>CapEx</label>
-                        <div class="input-wrapper small">
-                            <input type="number" id="capexPct" value="6.0">
-                            <span>%</span>
-                        </div>
-                    </div>
-                    <div class="input-group third">
-                        <label>Mgmt</label>
-                        <div class="input-wrapper small">
-                            <input type="number" id="managementPct" value="10.0">
-                            <span>%</span>
+                        <div class="input-group third">
+                            <label>Mgmt</label>
+                            <div class="input-wrapper small">
+                                <input type="number" id="managementPct" value="10.0">
+                                <span>%</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="input-section">
-                <h3>Market & Growth</h3>
-                <div class="row">
-                    <div class="input-group half">
-                        <label>Appreciation</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="appreciationHome" value="3.0" step="0.1">
-                            <span>%</span>
+                <div class="input-section no-border">
+                    <div class="row">
+                        <div class="input-group half">
+                            <label>Appreciation</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="appreciationHome" value="3.0" step="0.1">
+                                <span>%</span>
+                            </div>
+                        </div>
+                        <div class="input-group half">
+                            <label>Rent Growth</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="appreciationRent" value="3.0" step="0.1">
+                                <span>%</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="input-group half">
-                        <label>Rent Growth</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="appreciationRent" value="3.0" step="0.1">
-                            <span>%</span>
+                    <div class="row">
+                        <div class="input-group half">
+                            <label>Expense Inflation</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="inflationCosts" value="3.0" step="0.1">
+                                <span>%</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-group half">
-                        <label>Expense Inflation</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="inflationCosts" value="3.0" step="0.1">
-                            <span>%</span>
-                        </div>
-                    </div>
-                    <div class="input-group half">
-                        <label>Sale Cost</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="saleClosingCosts" value="8.0" step="0.1">
-                            <span>%</span>
+                        <div class="input-group half">
+                            <label>Sale Cost</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="saleClosingCosts" value="8.0" step="0.1">
+                                <span>%</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
 
         <div class="sidebar-footer">
-            <button onclick="calculate()" id="calc-btn">Calculate Results</button>
+            <button type="button" onclick="calculate()" id="calc-btn">Calculate Results</button>
+            <button type="button" onclick="resetInputs()" id="reset-btn">Reset Defaults</button>
         </div>
     </aside>
 

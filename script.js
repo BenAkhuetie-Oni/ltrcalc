@@ -1,18 +1,23 @@
 // --- UTILITY FUNCTIONS ---
 function parseInput(id) {
-    const val = parseFloat(document.getElementById(id).value);
+    const el = document.getElementById(id);
+    if (!el) return 0; // Safety check if ID missing
+    const val = parseFloat(el.value);
     return isNaN(val) ? 0 : val;
 }
 
 function fmtMoney(num) {
+    if (isNaN(num)) return "$0";
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
 }
 
 function fmtPct(num) {
+    if (isNaN(num)) return "0.00%";
     return (num * 100).toFixed(2) + '%';
 }
 
 function fmtDec(num) {
+    if (isNaN(num)) return "0.00";
     return num.toFixed(2);
 }
 
@@ -30,6 +35,9 @@ function calculateIRR(cashFlows, guess = 0.1) {
             dNpv -= (t * cashFlows[t]) / Math.pow(1 + rate, t + 1);
         }
         
+        // Prevent division by zero
+        if (dNpv === 0) return 0;
+
         let newRate = rate - npv / dNpv;
         if (Math.abs(newRate - rate) < precision) return newRate;
         rate = newRate;
@@ -37,7 +45,7 @@ function calculateIRR(cashFlows, guess = 0.1) {
     return rate;
 }
 
-// --- TAB SWITCHING ---
+// --- UI LOGIC: TABS & TOGGLE ---
 function switchTab(tabName) {
     // Hide all charts
     document.getElementById('chart-cashflow').classList.add('hidden');
@@ -45,12 +53,60 @@ function switchTab(tabName) {
     document.getElementById('chart-equity').classList.add('hidden');
     
     // Show selected
-    document.getElementById(`chart-${tabName}`).classList.remove('hidden');
+    const selected = document.getElementById(`chart-${tabName}`);
+    if(selected) selected.classList.remove('hidden');
 
     // Update buttons
     const btns = document.querySelectorAll('.tab-btn');
     btns.forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
+}
+
+function toggleAdvanced() {
+    const container = document.getElementById('advanced-inputs');
+    const arrow = document.getElementById('toggle-arrow');
+    
+    if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        arrow.style.transform = "rotate(180deg)";
+    } else {
+        container.classList.add('hidden');
+        arrow.style.transform = "rotate(0deg)";
+    }
+}
+
+// Default values for Reset
+const defaults = {
+    'purchasePrice': 300000,
+    'rehabCosts': 20000,
+    'arv': 350000,
+    'closingCostsPct': 3.0,
+    'downPaymentPct': 20,
+    'mortgageRate': 7.0,
+    'loanTerm': 30,
+    'pmiPct': 0.6,
+    'grossMonthlyRent': 2500,
+    'propertyTaxes': 3600,
+    'insurancePct': 0.6,
+    'hoaFees': 0,
+    'vacancyRate': 6.0,
+    'utilities': 50,
+    'repairsPct': 6.0,
+    'capexPct': 6.0,
+    'managementPct': 10.0,
+    'appreciationHome': 3.0,
+    'appreciationRent': 3.0,
+    'inflationCosts': 3.0,
+    'saleClosingCosts': 8.0
+};
+
+function resetInputs() {
+    for (const [id, val] of Object.entries(defaults)) {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    }
+    // Re-calculate after reset
+    calculate();
 }
 
 // --- CHART VARIABLES ---
@@ -87,34 +143,42 @@ function calculate() {
     const inflation = parseInput('inflationCosts') / 100;
     const saleCostPct = parseInput('saleClosingCosts') / 100;
 
-    // 2. Setup
+    // 2. Setup (Logic check: avoid NaN if fields are empty)
     const downPayment = pp * downPct;
     const closingCosts = pp * closingCostsPct;
     const totalCashInvested = downPayment + closingCosts + rehab;
     const loanAmount = pp - downPayment;
     
     // 1% Rule Logic
-    const onePercentVal = (rentMonthly / (pp + rehab));
+    const totalCost = pp + rehab;
+    const onePercentVal = totalCost > 0 ? (rentMonthly / totalCost) : 0;
+    
     const kpiOne = document.getElementById('kpiOnePercent');
     const badgeOne = document.getElementById('badgeOnePercent');
     
-    kpiOne.textContent = fmtPct(onePercentVal);
-    if (onePercentVal >= 0.01) {
-        badgeOne.textContent = "Pass";
-        badgeOne.className = "badge pass";
-    } else {
-        badgeOne.textContent = "Fail";
-        badgeOne.className = "badge fail";
+    if(kpiOne) kpiOne.textContent = fmtPct(onePercentVal);
+    
+    if(badgeOne) {
+        if (onePercentVal >= 0.01) {
+            badgeOne.textContent = "Pass";
+            badgeOne.className = "badge pass";
+        } else {
+            badgeOne.textContent = "Fail";
+            badgeOne.className = "badge fail";
+        }
     }
 
     // Mortgage
     const monthlyRate = rate / 12;
     const nPayments = term * 12;
     let monthlyPI = 0;
-    if (monthlyRate > 0) {
-        monthlyPI = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, nPayments)) / (Math.pow(1 + monthlyRate, nPayments) - 1);
-    } else {
-        monthlyPI = loanAmount / nPayments;
+    
+    if (loanAmount > 0) {
+        if (monthlyRate > 0) {
+            monthlyPI = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, nPayments)) / (Math.pow(1 + monthlyRate, nPayments) - 1);
+        } else {
+            monthlyPI = loanAmount / nPayments;
+        }
     }
 
     // Loop Vars
@@ -149,7 +213,7 @@ function calculate() {
 
         for (let m = 1; m <= 12; m++) {
             let monthlyPMI = 0;
-            if ((currentLoanBalance / pp) > 0.8) {
+            if (pp > 0 && (currentLoanBalance / pp) > 0.8) {
                 monthlyPMI = (loanAmount * pmiPct) / 12;
             }
 
@@ -212,7 +276,6 @@ function calculate() {
     document.getElementById('kpiCoC').textContent = fmtPct(y1.coc);
     document.getElementById('kpiCapRate').textContent = fmtPct(y1.capRate);
     
-    // Colorize Cash Flow
     if(y1.cashFlow < 0) {
         document.getElementById('kpiCashFlow').style.color = '#e7543c';
     } else {
@@ -228,6 +291,7 @@ function calculate() {
 
 function renderTable(data) {
     const tableBody = document.querySelector('#resultsTable tbody');
+    if(!tableBody) return;
     tableBody.innerHTML = '';
     
     const yearsOfInterest = [1, 5, 10, 30];
@@ -262,9 +326,14 @@ function renderTable(data) {
 function renderCharts(data) {
     const years = data.map(d => d.year);
     
-    // --- Chart 1: Cash Flow & CoC (Matches Image Style) ---
+    // --- Chart 1: Cash Flow & CoC ---
     const ctx1 = document.getElementById('cashFlowChart').getContext('2d');
-    if(chart1) chart1.destroy();
+    
+    // Destroy existing chart to prevent glitching/overlay
+    if(chart1) {
+        chart1.destroy();
+        chart1 = null;
+    }
     
     chart1 = new Chart(ctx1, {
         type: 'bar',
@@ -274,13 +343,13 @@ function renderCharts(data) {
                 {
                     label: 'Cash Flow ($)',
                     data: data.map(d => d.cashFlow),
-                    backgroundColor: '#6b7e59', // Light Green Bars
+                    backgroundColor: '#6b7e59', 
                     order: 2
                 },
                 {
                     label: 'CoC Return (%)',
                     data: data.map(d => d.coc * 100),
-                    borderColor: '#e7543c', // Red Line
+                    borderColor: '#e7543c', 
                     type: 'line',
                     yAxisID: 'y1',
                     order: 1,
@@ -309,12 +378,14 @@ function renderCharts(data) {
     });
 
     // --- Chart 2: Stacked Expenses ---
-    // Using 5-year intervals for cleanliness
     const intervalData = data.filter((d, i) => (i+1) % 5 === 0 || i === 0);
     const intervalLabels = intervalData.map(d => 'Yr ' + d.year);
     
     const ctx2 = document.getElementById('stackedChart').getContext('2d');
-    if(chart2) chart2.destroy();
+    if(chart2) {
+        chart2.destroy();
+        chart2 = null;
+    }
 
     chart2 = new Chart(ctx2, {
         type: 'bar',
@@ -322,10 +393,10 @@ function renderCharts(data) {
             labels: intervalLabels,
             datasets: [
                 { type: 'line', label: 'EGI', data: intervalData.map(d => d.egi), borderColor: '#2E5638', borderWidth: 2, tension: 0.3 },
-                { label: 'OpEx', data: intervalData.map(d => d.opex), backgroundColor: '#82877d' }, // Grey
-                { label: 'Interest+PMI', data: intervalData.map(d => d.interestPmi), backgroundColor: '#6b7e59' }, // Light Green
-                { label: 'Principal', data: intervalData.map(d => d.principal), backgroundColor: '#2E5638' }, // Dark Green
-                { label: 'Cash Flow', data: intervalData.map(d => d.cashFlow > 0 ? d.cashFlow : 0), backgroundColor: '#e7543c' } // Red
+                { label: 'OpEx', data: intervalData.map(d => d.opex), backgroundColor: '#82877d' }, 
+                { label: 'Interest+PMI', data: intervalData.map(d => d.interestPmi), backgroundColor: '#6b7e59' }, 
+                { label: 'Principal', data: intervalData.map(d => d.principal), backgroundColor: '#2E5638' }, 
+                { label: 'Cash Flow', data: intervalData.map(d => d.cashFlow > 0 ? d.cashFlow : 0), backgroundColor: '#e7543c' } 
             ]
         },
         options: {
@@ -337,7 +408,10 @@ function renderCharts(data) {
 
     // --- Chart 3: Equity ---
     const ctx3 = document.getElementById('equityChart').getContext('2d');
-    if(chart3) chart3.destroy();
+    if(chart3) {
+        chart3.destroy();
+        chart3 = null;
+    }
 
     chart3 = new Chart(ctx3, {
         type: 'line',
@@ -358,5 +432,5 @@ function renderCharts(data) {
     });
 }
 
-// Initial Calc
+// Initial Calc on load
 window.onload = calculate;

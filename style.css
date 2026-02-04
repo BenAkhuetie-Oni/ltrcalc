@@ -21,7 +21,7 @@ body {
     padding: 0;
     color: var(--text-dark);
     height: 100vh;
-    overflow: hidden; /* Prevent full page scroll, handle inside containers */
+    overflow: hidden; 
 }
 
 /* LAYOUT */
@@ -62,11 +62,17 @@ body {
     padding: 20px 25px;
     border-top: 1px solid var(--border-color);
     background-color: var(--card-white);
+    display: flex;
+    gap: 10px;
 }
 
 /* INPUT STYLING */
 .input-section {
     margin-bottom: 25px;
+}
+
+.input-section.no-border {
+    margin-bottom: 15px;
 }
 
 .input-section h3 {
@@ -126,6 +132,39 @@ body {
     font-family: inherit;
 }
 
+/* ADVANCED TOGGLE */
+.advanced-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #f1f1f1;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    user-select: none;
+}
+
+.advanced-toggle:hover {
+    background: #e9e9e9;
+}
+
+#toggle-arrow {
+    transition: transform 0.3s ease;
+}
+
+.advanced-section {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.advanced-section.hidden {
+    display: none;
+}
+
 /* Input Grid Helpers */
 .row {
     display: flex;
@@ -137,7 +176,7 @@ body {
 
 /* Calculate Button */
 #calc-btn {
-    width: 100%;
+    flex: 2;
     background-color: var(--primary-green);
     color: white;
     border: none;
@@ -151,6 +190,24 @@ body {
 
 #calc-btn:hover {
     background-color: var(--primary-light);
+}
+
+/* Reset Button */
+#reset-btn {
+    flex: 1;
+    background-color: transparent;
+    color: var(--text-grey);
+    border: 1px solid var(--border-color);
+    padding: 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#reset-btn:hover {
+    background-color: #f5f5f5;
+    color: var(--text-dark);
 }
 
 /* MAIN DASHBOARD */
