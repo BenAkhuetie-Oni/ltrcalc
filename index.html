@@ -20,13 +20,13 @@
         <div class="input-scroll-area">
             
             <div class="input-section">
-                <h3>Core Details</h3>
+                <h3>Required Inputs</h3>
                 
                 <div class="input-group">
                     <label>Purchase Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input type="number" id="purchasePrice" value="300000">
+                        <input type="text" id="purchasePrice" value="300,000" onblur="formatCurrencyInput(this)">
                     </div>
                 </div>
 
@@ -35,14 +35,14 @@
                         <label>Rehab Costs</label>
                         <div class="input-wrapper">
                             <span>$</span>
-                            <input type="number" id="rehabCosts" value="20000">
+                            <input type="text" id="rehabCosts" value="20,000" onblur="formatCurrencyInput(this)">
                         </div>
                     </div>
                     <div class="input-group half">
                         <label>ARV</label>
                         <div class="input-wrapper">
                             <span>$</span>
-                            <input type="number" id="arv" value="350000">
+                            <input type="text" id="arv" value="350,000" onblur="formatCurrencyInput(this)">
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                         <label>Rent ($/mo)</label>
                         <div class="input-wrapper">
                             <span>$</span>
-                            <input type="number" id="grossMonthlyRent" value="2500">
+                            <input type="text" id="grossMonthlyRent" value="2,500" onblur="formatCurrencyInput(this)">
                         </div>
                     </div>
                 </div>
@@ -85,13 +85,13 @@
                     <label>Annual Taxes</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input type="number" id="propertyTaxes" value="3600">
+                        <input type="text" id="propertyTaxes" value="3,600" onblur="formatCurrencyInput(this)">
                     </div>
                 </div>
             </div>
 
             <div class="advanced-toggle" onclick="toggleAdvanced()">
-                <span>Advanced Options & Assumptions</span>
+                <span>Optional Inputs</span>
                 <span id="toggle-arrow">▼</span>
             </div>
 
@@ -127,7 +127,7 @@
                             <label>HOA ($/mo)</label>
                             <div class="input-wrapper">
                                 <span>$</span>
-                                <input type="number" id="hoaFees" value="0">
+                                <input type="text" id="hoaFees" value="0" onblur="formatCurrencyInput(this)">
                             </div>
                         </div>
                         <div class="input-group half">
@@ -142,7 +142,7 @@
                         <label>Owner Utilities ($/mo)</label>
                         <div class="input-wrapper">
                             <span>$</span>
-                            <input type="number" id="utilities" value="50">
+                            <input type="text" id="utilities" value="50" onblur="formatCurrencyInput(this)">
                         </div>
                     </div>
                     
