@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Property Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Rental Property Calculator</h1>
+        <p>Analyze cash flow, ROI, and long-term wealth.</p>
+    </header>
+
+    <div class="calculator-grid">
+        <div class="inputs-section">
+            
+            <div class="input-group">
+                <h3>Acquisition</h3>
+                <label>Purchase Price ($) <input type="number" id="purchasePrice" value="300000"></label>
+                <label>Rehab / Make-Ready ($) <input type="number" id="rehabCosts" value="20000"></label>
+                <label>After Repair Value ($) <input type="number" id="arv" value="350000"></label>
+                <label>Closing Costs (% of PP) <input type="number" id="closingCostsPct" value="3.0" step="0.1"></label>
+            </div>
+
+            <div class="input-group">
+                <h3>Financing</h3>
+                <label>Down Payment (% of PP) <input type="number" id="downPaymentPct" value="20" step="0.1"></label>
+                <label>Mortgage Rate (%) <input type="number" id="mortgageRate" value="7.0" step="0.1"></label>
+                <label>Loan Term (Years) <input type="number" id="loanTerm" value="30"></label>
+                <label>PMI (%) <span class="tooltip">(If LTV > 80%)</span> <input type="number" id="pmiPct" value="0.6" step="0.1"></label>
+            </div>
+
+            <div class="input-group">
+                <h3>Operational</h3>
+                <label>Gross Monthly Rent ($) <input type="number" id="grossMonthlyRent" value="2500"></label>
+                <label>Property Taxes ($/yr) <input type="number" id="propertyTaxes" value="3600"></label>
+                <label>Insurance (% of PP) <input type="number" id="insurancePct" value="0.6" step="0.1"></label>
+                <label>HOA Fees ($/mo) <input type="number" id="hoaFees" value="0"></label>
+                <label>Vacancy Rate (%) <input type="number" id="vacancyRate" value="6.0" step="0.1"></label>
+                <label>Owner Utilities ($/mo) <input type="number" id="utilities" value="50"></label>
+                <label>Repairs & Maint. (%) <input type="number" id="repairsPct" value="6.0" step="0.1"></label>
+                <label>CapEx (%) <input type="number" id="capexPct" value="6.0" step="0.1"></label>
+                <label>Management (%) <input type="number" id="managementPct" value="10.0" step="0.1"></label>
+            </div>
+
+            <div class="input-group">
+                <h3>Market Assumptions</h3>
+                <label>Home Appreciation (%) <input type="number" id="appreciationHome" value="3.0" step="0.1"></label>
+                <label>Rent Appreciation (%) <input type="number" id="appreciationRent" value="3.0" step="0.1"></label>
+                <label>Cost Inflation (%) <input type="number" id="inflationCosts" value="3.0" step="0.1"></label>
+                <label>Sale Closing Costs (%) <input type="number" id="saleClosingCosts" value="8.0" step="0.1"></label>
+            </div>
+
+            <button onclick="calculate()" id="calc-btn">Calculate Results</button>
+        </div>
+
+        <div class="outputs-section">
+            
+            <div id="metrics-summary">
+                <div class="metric-card">
+                    <h4>1% Rule</h4>
+                    <span id="onePercentRule">--</span>
+                </div>
+                </div>
+
+            <h3>Snapshot: Years 1, 5, 10, 30</h3>
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Year 1</th>
+                            <th>Year 5</th>
+                            <th>Year 10</th>
+                            <th>Year 30</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <h3>Cash Flow & Cash-on-Cash Return</h3>
+                <canvas id="cashFlowChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Income Breakdown (Stacked)</h3>
+                <canvas id="stackedChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3>Equity & Loan Balance</h3>
+                <canvas id="equityChart"></canvas>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
